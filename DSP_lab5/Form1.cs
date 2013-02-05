@@ -25,8 +25,8 @@ namespace DSP_lab5
         {
             byte[] inputBytes = GetBytes(input);
 
-            int width = input.Width;
-            int height = input.Height;
+            width = input.Width;
+            height = input.Height;
 
             for (int x = 0; x < width - 1; x++)
             {
