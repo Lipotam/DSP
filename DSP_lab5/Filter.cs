@@ -33,7 +33,7 @@ namespace DSP_lab5
                     UPicture = (Bitmap)MainBitmap.Clone();
                     switch (UPicture.PixelFormat)
                     {
-                        case PixelFormat.Format24bppRgb:
+                        case PixelFormat.Format32bppRgb:
                             {
                                 BytesPerPix = 3;
                                 break;

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using ZedGraph;
@@ -21,6 +23,10 @@ namespace DSP_lab5
             InitializeComponent();
         }
 
+        private bool flag = false;
+        List<int> listX = new List<int>();
+        List<int> listY = new List<int>();
+
         public Bitmap Negative(Bitmap input)
         {
             byte[] inputBytes = GetBytes(input);
@@ -32,9 +38,9 @@ namespace DSP_lab5
             {
                 for (int y = 0; y < height - 1; y++)
                 {
-                    inputBytes[3 * (width * y + x) + 0] = (byte)(255 - inputBytes[3 * (width * y + x) + 0]);
-                    inputBytes[3 * (width * y + x) + 1] = (byte)(255 - inputBytes[3 * (width * y + x) + 1]);
-                    inputBytes[3 * (width * y + x) + 2] = (byte)(255 - inputBytes[3 * (width * y + x) + 2]);
+                    inputBytes[4 * (width * y + x) + 0] = (byte)(255 - inputBytes[4 * (width * y + x) + 0]);
+                    inputBytes[4 * (width * y + x) + 1] = (byte)(255 - inputBytes[4 * (width * y + x) + 1]);
+                    inputBytes[4 * (width * y + x) + 2] = (byte)(255 - inputBytes[4 * (width * y + x) + 2]);
                 }
             }
 
@@ -61,19 +67,19 @@ namespace DSP_lab5
                 return;
             }
 
-            rezult += (inputBytes[3 * (width * (coordinateY - 1) + coordinateX)])
+            rezult += (inputBytes[4 * (width * (coordinateY - 1) + coordinateX)])
                         > separateValue.Value
                         ? (byte)1
                         : (byte)0;
-            rezult += (inputBytes[3 * (width * coordinateY + coordinateX + 1)])
+            rezult += (inputBytes[4 * (width * coordinateY + coordinateX + 1)])
                         > separateValue.Value
                         ? (byte)1
                         : (byte)0;
-            rezult += (inputBytes[3 * (width * (coordinateY + 1) + coordinateX)])
+            rezult += (inputBytes[4 * (width * (coordinateY + 1) + coordinateX)])
                         > separateValue.Value
                         ? (byte)1
                         : (byte)0;
-            rezult += (inputBytes[3 * (width * coordinateY + coordinateX - 1)])
+            rezult += (inputBytes[4 * (width * coordinateY + coordinateX - 1)])
                         > separateValue.Value
                         ? (byte)1
                         : (byte)0;
@@ -90,63 +96,86 @@ namespace DSP_lab5
             groupMap = new byte[width, height];
             int groupID = 100;
 
-            for (int i=0; i < width; i++)
+            for (int i = 0; i < width; i++)
             {
-                for (int j=0; j < height; j++)
+                for (int j = 0; j < height; j++)
                 {
                     if (groupMap[i, j] == 0)
                     {
-                        SetGroupToPixel(i, j, groupID);
-                        if (groupMap[i, j] == 2)
-                        {
-                            groupID+=10;
-                        }
+                        groupID += SetGroupToPixel(i, j, groupID, 0);
+
                     }
                 }
             }
         }
 
-        private void SetGroupToPixel(int coordinateX, int coordinateY, int groupID)
+        private byte SetGroupToPixel(int coordinateX, int coordinateY, int groupID, byte recursiveNesting)
         {
             if (coordinateX < 0 || coordinateY < 0 || coordinateX > width - 1 || coordinateY > height - 1 || groupMap[coordinateX, coordinateY] != 0)
             {
-                return;
+                return 0;
             }
+
+            if (recursiveNesting >= 100)
+            {
+                listX.Add(coordinateX);
+                listY.Add(coordinateY);
+                return 0;
+            }
+
 
             if (recognizedMap[coordinateX, coordinateY] == 2)
             {
                 groupMap[coordinateX, coordinateY] = 2;
-                outputBytes[3 * (width * coordinateY + coordinateX)] = (byte)groupID;
-                outputBytes[3 * (width * coordinateY + coordinateX) + 1] = (byte)groupID;
-                outputBytes[3 * (width * coordinateY + coordinateX) + 2] = (byte)groupID;
+                outputBytes[4 * (width * coordinateY + coordinateX)] = (byte)groupID;
+                outputBytes[4 * (width * coordinateY + coordinateX) + 1] = (byte)groupID;
+                outputBytes[4 * (width * coordinateY + coordinateX) + 2] = (byte)groupID;
             }
             else
             {
                 groupMap[coordinateX, coordinateY] = 1;
-                outputBytes[3 * (width * coordinateY + coordinateX)] = 255;
-                outputBytes[3 * (width * coordinateY + coordinateX) + 1] = 255;
-                outputBytes[3 * (width * coordinateY + coordinateX) + 2] = 255;
-                return;
+                outputBytes[4 * (width * coordinateY + coordinateX)] = 255;
+                outputBytes[4 * (width * coordinateY + coordinateX) + 1] = 255;
+                outputBytes[4 * (width * coordinateY + coordinateX) + 2] = 255;
+                return 0;
             }
 
             if (!(coordinateX - 1 < 0 || coordinateY < 0 || coordinateX - 1 > width - 1 || coordinateY > height - 1) && recognizedMap[coordinateX - 1, coordinateY] == 2 && groupMap[coordinateX - 1, coordinateY] == 0)
             {
-                SetGroupToPixel(coordinateX - 1, coordinateY, groupID);
+                SetGroupToPixel(coordinateX - 1, coordinateY, groupID, (byte)(recursiveNesting + 1));
             }
 
             if (!(coordinateX + 1 < 0 || coordinateY < 0 || coordinateX + 1 > width - 1 || coordinateY > height - 1) && recognizedMap[coordinateX + 1, coordinateY] == 2 && groupMap[coordinateX + 1, coordinateY] == 0)
             {
-                SetGroupToPixel(coordinateX + 1, coordinateY, groupID);
+                SetGroupToPixel(coordinateX + 1, coordinateY, groupID, (byte)(recursiveNesting + 1));
             }
 
             if (!(coordinateX < 0 || coordinateY - 1 < 0 || coordinateX > width - 1 || coordinateY - 1 > height - 1) && recognizedMap[coordinateX, coordinateY - 1] == 2 && groupMap[coordinateX, coordinateY - 1] == 0)
             {
-                SetGroupToPixel(coordinateX, coordinateY - 1, groupID);
+                SetGroupToPixel(coordinateX, coordinateY - 1, groupID, (byte)(recursiveNesting + 1));
             }
 
             if (!(coordinateX < 0 || coordinateY + 1 < 0 || coordinateX > width - 1 || coordinateY + 1 > height - 1) && recognizedMap[coordinateX, coordinateY + 1] == 2 && groupMap[coordinateX, coordinateY + 1] == 0)
             {
-                SetGroupToPixel(coordinateX, coordinateY + 1, groupID);
+                SetGroupToPixel(coordinateX, coordinateY + 1, groupID, (byte)(recursiveNesting + 1));
+            }
+
+            while (recursiveNesting == 0 && listX.Count > 0)
+            {
+                int tempX = listX.First();
+                int tempY = listY.First();
+                listX.Remove(listX.First());
+                listY.Remove(listY.First());
+                SetGroupToPixel(tempX, tempY, groupID, (byte)(recursiveNesting + 1));
+            }
+
+            if (recognizedMap[coordinateX, coordinateY] == 2)
+            {
+                return 100;
+            }
+            else
+            {
+                return 0;
             }
         }
 
@@ -162,12 +191,12 @@ namespace DSP_lab5
             {
                 for (int y = 0; y < height - 1; y++)
                 {
-                    inputBytes[3 * (width * y + x) + 0] =
-                        inputBytes[3 * (width * y + x) + 1] =
-                        inputBytes[3 * (width * y + x) + 2] =
-                        (byte)(0.30 * inputBytes[3 * (width * y + x) + 0] +
-                                0.59 * inputBytes[3 * (width * y + x) + 1] +
-                                0.11 * inputBytes[3 * (width * y + x) + 2])
+                    inputBytes[4 * (width * y + x) + 0] =
+                        inputBytes[4 * (width * y + x) + 1] =
+                        inputBytes[4 * (width * y + x) + 2] =
+                        (byte)(0.30 * inputBytes[4 * (width * y + x) + 0] +
+                                0.59 * inputBytes[4 * (width * y + x) + 1] +
+                                0.11 * inputBytes[4 * (width * y + x) + 2])
                         > (byte)separateValue.Value
                         ? (byte)255
                         : (byte)0;
@@ -206,9 +235,9 @@ namespace DSP_lab5
 
                             double kernelVal = weightFFT[i, j];
 
-                            rSum += inputBytes[3 * (width * pixelPosY + pixelPosX) + 0] * weightFFT[i, j];
-                            gSum += inputBytes[3 * (width * pixelPosY + pixelPosX) + 1] * weightFFT[i, j];
-                            bSum += inputBytes[3 * (width * pixelPosY + pixelPosX) + 2] * weightFFT[i, j];
+                            rSum += inputBytes[4 * (width * pixelPosY + pixelPosX) + 0] * weightFFT[i, j];
+                            gSum += inputBytes[4 * (width * pixelPosY + pixelPosX) + 1] * weightFFT[i, j];
+                            bSum += inputBytes[4 * (width * pixelPosY + pixelPosX) + 2] * weightFFT[i, j];
 
                             kernelSum += kernelVal;
                         }
@@ -224,9 +253,9 @@ namespace DSP_lab5
                     if (bSum < 0) bSum = 0;
                     if (bSum > 255) bSum = 255;
 
-                    outputBytes[3 * (width * y + x) + 0] = (byte)rSum;
-                    outputBytes[3 * (width * y + x) + 1] = (byte)gSum;
-                    outputBytes[3 * (width * y + x) + 2] = (byte)bSum;
+                    outputBytes[4 * (width * y + x) + 0] = (byte)rSum;
+                    outputBytes[4 * (width * y + x) + 1] = (byte)gSum;
+                    outputBytes[4 * (width * y + x) + 2] = (byte)bSum;
                 }
             }
 
@@ -235,12 +264,12 @@ namespace DSP_lab5
 
         private Bitmap GetBitmap(byte[] input, int width, int height)
         {
-            if (input.Length % 3 != 0) return null;
+            if (input.Length % 4 != 0) return null;
             Bitmap output = new Bitmap(width, height);
             BitmapData outputData = output.LockBits(
                 new Rectangle(0, 0, width, height),
                 ImageLockMode.ReadWrite,
-                PixelFormat.Format24bppRgb);
+                PixelFormat.Format32bppRgb);
 
             System.Runtime.InteropServices.Marshal.Copy(input, 0, outputData.Scan0, input.Length);
             output.UnlockBits(outputData);
@@ -249,11 +278,11 @@ namespace DSP_lab5
 
         private byte[] GetBytes(Bitmap input)
         {
-            int bytesCount = input.Width * input.Height * 3;
+            int bytesCount = input.Width * input.Height * 4;
             BitmapData inputData = input.LockBits(
                 new Rectangle(0, 0, input.Width, input.Height),
                 ImageLockMode.ReadOnly,
-                PixelFormat.Format24bppRgb);
+                PixelFormat.Format32bppRgb);
 
             byte[] output = new byte[bytesCount];
             System.Runtime.InteropServices.Marshal.Copy(inputData.Scan0, output, 0, bytesCount);
@@ -309,9 +338,9 @@ namespace DSP_lab5
             {
                 for (int y = 0; y < height; y++)
                 {
-                    byte r = inputBytes[3 * (width * y + x) + 0];
-                    byte g = inputBytes[3 * (width * y + x) + 1];
-                    byte b = inputBytes[3 * (width * y + x) + 2];
+                    byte r = inputBytes[4 * (width * y + x) + 0];
+                    byte g = inputBytes[4 * (width * y + x) + 1];
+                    byte b = inputBytes[4 * (width * y + x) + 2];
 
                     index = (int)(0.3 * r + 0.59 * g + 0.11 * b);
 
