@@ -23,7 +23,6 @@ namespace DSP_lab5
             InitializeComponent();
         }
 
-        private bool flag = false;
         List<int> listX = new List<int>();
         List<int> listY = new List<int>();
 
@@ -56,11 +55,18 @@ namespace DSP_lab5
             width = input.Width;
             height = input.Height;
 
-            SetPixelGroup(1, 1);
+            SetPixelGroup(1, 1, 0);
         }
 
-        private void SetPixelGroup(int coordinateX, int coordinateY)
+        private void SetPixelGroup(int coordinateX, int coordinateY, byte recursiveNesting)
         {
+            if (recursiveNesting >= 10)
+            {
+                listX.Add(coordinateX);
+                listY.Add(coordinateY);
+                return;
+            }
+
             byte rezult = 0;
             if (coordinateX < 1 || coordinateY < 1 || coordinateX >= width - 1 || coordinateY >= height - 1 || recognizedMap[coordinateX, coordinateY] != 0)
             {
@@ -87,8 +93,17 @@ namespace DSP_lab5
             recognizedMap[coordinateX, coordinateY] = rezult > 2
                                                           ? (byte)2
                                                           : (byte)1;
-            SetPixelGroup(coordinateX + 1, coordinateY);
-            SetPixelGroup(coordinateX, coordinateY + 1);
+            SetPixelGroup(coordinateX + 1, coordinateY, (byte)(recursiveNesting + 1));
+            SetPixelGroup(coordinateX, coordinateY + 1, (byte)(recursiveNesting + 1));
+
+            while (recursiveNesting == 0 && listX.Count > 0)
+            {
+                int tempX = listX.First();
+                int tempY = listY.First();
+                listX.Remove(listX.First());
+                listY.Remove(listY.First());
+                SetPixelGroup(tempX, tempY, (byte)(recursiveNesting + 1));
+            }
         }
 
         private void Recognize()
@@ -103,7 +118,6 @@ namespace DSP_lab5
                     if (groupMap[i, j] == 0)
                     {
                         groupID += SetGroupToPixel(i, j, groupID, 0);
-
                     }
                 }
             }
@@ -116,13 +130,12 @@ namespace DSP_lab5
                 return 0;
             }
 
-            if (recursiveNesting >= 100)
+            if (recursiveNesting >= 10)
             {
                 listX.Add(coordinateX);
                 listY.Add(coordinateY);
                 return 0;
             }
-
 
             if (recognizedMap[coordinateX, coordinateY] == 2)
             {
@@ -171,7 +184,7 @@ namespace DSP_lab5
 
             if (recognizedMap[coordinateX, coordinateY] == 2)
             {
-                return 100;
+                return 10;
             }
             else
             {
@@ -269,7 +282,8 @@ namespace DSP_lab5
             BitmapData outputData = output.LockBits(
                 new Rectangle(0, 0, width, height),
                 ImageLockMode.ReadWrite,
-                PixelFormat.Format32bppRgb);
+                PixelFormat.Format32bppRgb
+                );
 
             System.Runtime.InteropServices.Marshal.Copy(input, 0, outputData.Scan0, input.Length);
             output.UnlockBits(outputData);
@@ -278,6 +292,10 @@ namespace DSP_lab5
 
         private byte[] GetBytes(Bitmap input)
         {
+            if (input == null)
+            {
+                return null;
+            }
             int bytesCount = input.Width * input.Height * 4;
             BitmapData inputData = input.LockBits(
                 new Rectangle(0, 0, input.Width, input.Height),
@@ -289,21 +307,21 @@ namespace DSP_lab5
             input.UnlockBits(inputData);
             return output;
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            Stream myStream = null;
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp,*.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
+                    Stream myStream;
                     if ((myStream = openFileDialog1.OpenFile()) != null)
                     {
                         using (myStream)
                         {
-                            Bitmap bit = new Bitmap(openFileDialog1.FileName);
-                            pictureBox1.Image = bit;
+                            pictureBox1.Image = new Bitmap(openFileDialog1.FileName);
                         }
                     }
                 }
