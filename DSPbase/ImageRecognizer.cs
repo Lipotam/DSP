@@ -15,7 +15,7 @@ namespace DSPbase
         private Bitmap outputImage;
         private byte[] outputBytes;
 
-        private  static Random random = new Random();
+        private static readonly Random random = new Random();
 
         public Bitmap InputImage
         {
@@ -222,6 +222,23 @@ namespace DSPbase
 
         public void PaintFromGroupMap()
         {
+            int maxGroupNumer = groupMap[0, 0];
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (groupMap[x, y] > maxGroupNumer)
+                    {
+                        maxGroupNumer = groupMap[x, y];
+                    }
+                }
+            }
+
+            List<Color> colorList = new List<Color>();
+            for (int i = 0; i < maxGroupNumer; i++)
+            {
+                colorList.Add(GetRandomColor());
+            }
             if (groupMap != null)
             {
                 outputBytes = new byte[inputBytes.Length];
@@ -230,14 +247,9 @@ namespace DSPbase
                 {
                     for (int y = 0; y < height; y++)
                     {
-                        if (groupMap[x, y] == 1)
-                        {
-                            SetColorToOutputbytes(x, y, Color.White);
-                        }
-                        else
-                        {
-                           SetColorToOutputbytes(x,y,GetRandomColor());
-                        }
+                        this.SetColorToOutputbytes(x, y, this.groupMap[x, y] == 1
+                            ? Color.White
+                            : colorList.ToArray()[this.groupMap[x, y] - 1]);
                     }
                 }
                 outputImage = GetBitmap(outputBytes);
@@ -249,7 +261,7 @@ namespace DSPbase
                                      int lowestBlueValue = 0, int highestBlueValue = 255
                                     )
         {
-            
+
             return Color.FromArgb(
                 random.Next(lowestRedValue, highestRedValue),
                 random.Next(lowestGreenValue, higestGreenValue),
