@@ -15,6 +15,13 @@ namespace DSPbase
         private Bitmap outputImage;
         private byte[] outputBytes;
 
+        private readonly int lowestRedValue;
+        private readonly int highestRedValue;
+        private readonly int lowestGreenValue;
+        private readonly int higestGreenValue;
+        private readonly int lowestBlueValue;
+        private readonly int highestBlueValue;
+
         private static readonly Random random = new Random();
 
         public Bitmap InputImage
@@ -39,13 +46,21 @@ namespace DSPbase
         List<int> listX;
         List<int> listY;
 
-        public ImageRecognizer(Bitmap inputImage, byte separateValue)
+        public ImageRecognizer(Bitmap inputImage, byte separateValue, int lowestRedValue = 0, int highestRedValue = 255,
+                                     int lowestGreenValue = 0, int higestGreenValue = 255,
+                                     int lowestBlueValue = 0, int highestBlueValue = 255)
         {
             this.inputImage = inputImage;
             this.separateValue = separateValue;
             inputBytes = GetBytes(inputImage);
             width = inputImage.Width;
             height = inputImage.Height;
+            this.lowestRedValue = lowestRedValue;
+            this.highestRedValue = highestRedValue;
+            this.lowestGreenValue = lowestGreenValue;
+            this.higestGreenValue = higestGreenValue;
+            this.lowestBlueValue = lowestBlueValue;
+            this.highestBlueValue = highestBlueValue;
         }
 
         public void Negative()
@@ -82,7 +97,6 @@ namespace DSPbase
             {
                 for (int j = 0; j < height; j++)
                 {
-
                     groupId += SetGroupToPixel(i, j, groupId, 0);
                 }
             }
@@ -150,7 +164,6 @@ namespace DSPbase
                 return 0;
             }
         }
-
 
         public void TransformToBlackAndWhite()
         {
@@ -256,12 +269,8 @@ namespace DSPbase
             }
         }
 
-        private Color GetRandomColor(int lowestRedValue = 0, int highestRedValue = 255,
-                                     int lowestGreenValue = 0, int higestGreenValue = 255,
-                                     int lowestBlueValue = 0, int highestBlueValue = 255
-                                    )
+        private Color GetRandomColor()
         {
-
             return Color.FromArgb(
                 random.Next(lowestRedValue, highestRedValue),
                 random.Next(lowestGreenValue, higestGreenValue),
@@ -275,6 +284,5 @@ namespace DSPbase
             outputBytes[4 * (width * y + x) + 1] = colorToset.G;
             outputBytes[4 * (width * y + x) + 2] = colorToset.R;
         }
-
     }
 }
