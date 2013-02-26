@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSP_lab5", "DSP_lab5\DSP_la
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSPbase", "DSPbase\DSPbase.csproj", "{1F28EACE-7582-4AAA-804C-1869FFC4894B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSP_lab6", "DSP_lab6\DSP_lab6.csproj", "{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{1F28EACE-7582-4AAA-804C-1869FFC4894B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{1F28EACE-7582-4AAA-804C-1869FFC4894B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1F28EACE-7582-4AAA-804C-1869FFC4894B}.Release|x86.ActiveCfg = Release|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F4F3B8F2-F6C4-4A86-BECD-BC308681AABE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
