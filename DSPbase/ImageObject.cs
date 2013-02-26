@@ -9,6 +9,26 @@ namespace DSPbase
     {
         private List<Point> pointList;
         private int perimeter;
+        private int groupId;
+        public int GroupId
+        {
+            set
+            {
+                this.groupId = value;
+            }
+            get
+            {
+                return groupId;
+            }
+        }
+
+        public List<Point> Points
+        {
+            get
+            {
+                return pointList;
+            }
+        }
 
         public int Area
         {

@@ -60,10 +60,11 @@ namespace DSP_lab6
 
         private void button2_Click(object sender, EventArgs e)
         {
-            image = new ImageRecognizer((Bitmap)pictureBox1.Image, (byte)separateValue.Value);
+            image = new ImageRecognizer((Bitmap)pictureBox1.Image, (byte)separateValue.Value,(int)MinSquare.Value);
             image.TransformToBlackAndWhite();
             pictureBox2.Image = image.OutputImage;
             image.RecognizeToGroups();
+            image.SetPixelsToObjectGroupsWithFilter();
             image.PaintFromGroupMap();
             pictureBox3.Image = image.OutputImage;
             DrawHistogram(zedGraphControl2, pictureBox1);

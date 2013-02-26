@@ -14,6 +14,7 @@ namespace DSPbase
 
         private Bitmap outputImage;
         private byte[] outputBytes;
+        private List<ImageObject> objectList;
 
         private readonly int lowestRedValue;
         private readonly int highestRedValue;
@@ -21,7 +22,7 @@ namespace DSPbase
         private readonly int higestGreenValue;
         private readonly int lowestBlueValue;
         private readonly int highestBlueValue;
-
+        private readonly int minimalSquare;
         private static readonly Random random = new Random();
 
         public Bitmap InputImage
@@ -46,7 +47,7 @@ namespace DSPbase
         List<int> listX;
         List<int> listY;
 
-        public ImageRecognizer(Bitmap inputImage, byte separateValue, int lowestRedValue = 0, int highestRedValue = 255,
+        public ImageRecognizer(Bitmap inputImage, byte separateValue, int minimalSquare, int lowestRedValue = 0, int highestRedValue = 255,
                                      int lowestGreenValue = 0, int higestGreenValue = 255,
                                      int lowestBlueValue = 0, int highestBlueValue = 255)
         {
@@ -61,6 +62,7 @@ namespace DSPbase
             this.higestGreenValue = higestGreenValue;
             this.lowestBlueValue = lowestBlueValue;
             this.highestBlueValue = highestBlueValue;
+            this.minimalSquare = minimalSquare;
         }
 
         public void Negative()
@@ -235,17 +237,7 @@ namespace DSPbase
 
         public void PaintFromGroupMap()
         {
-            int maxGroupNumer = groupMap[0, 0];
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    if (groupMap[x, y] > maxGroupNumer)
-                    {
-                        maxGroupNumer = groupMap[x, y];
-                    }
-                }
-            }
+            int maxGroupNumer = this.GetGroupNumber();
 
             List<Color> colorList = new List<Color>();
             for (int i = 0; i < maxGroupNumer; i++)
@@ -269,6 +261,67 @@ namespace DSPbase
             }
         }
 
+        private int GetGroupNumber()
+        {
+            int maxGroupNumer = groupMap[0, 0];
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (groupMap[x, y] > maxGroupNumer)
+                    {
+                        maxGroupNumer = groupMap[x, y];
+                    }
+                }
+            }
+
+            return maxGroupNumer;
+        }
+
+        public void SetPixelsToObjectGroupsWithFilter()
+        {
+            ImageObject[] objectArray = new ImageObject[GetGroupNumber() + 1];
+            objectArray[0] = new ImageObject();
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (objectArray[groupMap[x, y]] == null)
+                    {
+                        objectArray[groupMap[x, y]] = new ImageObject();
+                        objectArray[groupMap[x, y]].GroupId = groupMap[x, y];
+                    }
+
+                    objectArray[groupMap[x, y]].AddPoint(new Point(x, y));
+
+                    if (!(
+                        IsGroupEqualToGroupnumber(x - 1, y, groupMap[x, y]) &&
+                        IsGroupEqualToGroupnumber(x + 1, y, groupMap[x, y]) &&
+                        IsGroupEqualToGroupnumber(x, y - 1, groupMap[x, y]) &&
+                        IsGroupEqualToGroupnumber(x, y + 1, groupMap[x, y])))
+                    {
+                        objectArray[groupMap[x, y]].IncrementPerimeter();
+                    }
+                }
+            }
+            List<ImageObject> objectList = new List<ImageObject>();
+            foreach (ImageObject imageObject in objectArray)
+            {
+                if (imageObject.Area > minimalSquare)
+                {
+                    objectList.Add(imageObject);
+                }
+                else
+                {
+                    foreach (Point point in imageObject.Points)
+                    {
+                        groupMap[point.X, point.Y] = 1;
+                    }
+                }
+            }
+        }
+
         private Color GetRandomColor()
         {
             return Color.FromArgb(
@@ -283,6 +336,15 @@ namespace DSPbase
             outputBytes[4 * (width * y + x) + 0] = colorToset.B;
             outputBytes[4 * (width * y + x) + 1] = colorToset.G;
             outputBytes[4 * (width * y + x) + 2] = colorToset.R;
+        }
+
+        private bool IsGroupEqualToGroupnumber(int x, int y, int groupNumber)
+        {
+            if (!(x < 0 || y < 0 || x > width - 1 || y > height - 1) && groupMap[x, y] == groupNumber)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

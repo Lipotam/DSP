@@ -41,10 +41,13 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.separateValue = new System.Windows.Forms.NumericUpDown();
+            this.MinSquare = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.separateValue)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MinSquare)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -165,11 +168,39 @@
             0,
             0});
             // 
+            // MinSquare
+            // 
+            this.MinSquare.Location = new System.Drawing.Point(12, 135);
+            this.MinSquare.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.MinSquare.Name = "MinSquare";
+            this.MinSquare.Size = new System.Drawing.Size(75, 20);
+            this.MinSquare.TabIndex = 14;
+            this.MinSquare.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 119);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(79, 13);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Minimal Square";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(920, 595);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.MinSquare);
             this.Controls.Add(this.separateValue);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -187,6 +218,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.separateValue)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.MinSquare)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,6 +238,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown separateValue;
+        private System.Windows.Forms.NumericUpDown MinSquare;
+        private System.Windows.Forms.Label label5;
     }
 }
 
