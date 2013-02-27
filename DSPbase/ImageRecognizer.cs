@@ -15,6 +15,9 @@ namespace DSPbase
         private Bitmap outputImage;
         private byte[] outputBytes;
         private List<ImageObject> objectList;
+        private int kMedians;
+        private List<ImageObject> hitImagesList;
+        private double areaCoefficient, perimeterCoefficient, elongationCoefficient, densityCoefficient, massCenterCoefficient;
 
         private readonly int lowestRedValue;
         private readonly int highestRedValue;
@@ -47,7 +50,10 @@ namespace DSPbase
         List<int> listX;
         List<int> listY;
 
-        public ImageRecognizer(Bitmap inputImage, byte separateValue, int minimalSquare, int lowestRedValue = 0, int highestRedValue = 255,
+        public ImageRecognizer(Bitmap inputImage, byte separateValue, int minimalSquare,
+                                    int kMedians = 1, double areaCoefficient = 1, double perimeterCoefficient = 1,
+                                    double elongationCoefficient = 1, double densityCoefficient = 1, double massCenterCoefficient = 1,
+                                     int lowestRedValue = 0, int highestRedValue = 255,
                                      int lowestGreenValue = 0, int higestGreenValue = 255,
                                      int lowestBlueValue = 0, int highestBlueValue = 255)
         {
@@ -63,6 +69,12 @@ namespace DSPbase
             this.lowestBlueValue = lowestBlueValue;
             this.highestBlueValue = highestBlueValue;
             this.minimalSquare = minimalSquare;
+            this.kMedians = kMedians;
+            this.areaCoefficient = areaCoefficient;
+            this.perimeterCoefficient = perimeterCoefficient;
+            this.elongationCoefficient = elongationCoefficient;
+            this.densityCoefficient = densityCoefficient;
+            this.massCenterCoefficient = massCenterCoefficient;
         }
 
         public void Negative()
@@ -259,6 +271,89 @@ namespace DSPbase
                 }
                 outputImage = GetBitmap(outputBytes);
             }
+        }
+
+        public void SetObjectsToGroups()
+        {
+            FakeImageObject[] mediansArray = new FakeImageObject[kMedians];
+            for (int i = 0; i < kMedians; i++)
+            {
+                mediansArray[i] = GetRandomFromObjectList();
+            }
+
+            List<ImageObject>[] imageClasses = new List<ImageObject>[kMedians];
+            for (int i = 0; i < kMedians; i++)
+            {
+                imageClasses[i] = new List<ImageObject>();
+            }
+
+            foreach (ImageObject imageObject in objectList)
+            {
+                imageClasses[GetClassIndex(mediansArray, imageObject)].Add(imageObject);
+            }
+
+
+
+
+
+
+        }
+
+        private FakeImageObject GetAverageFromImageList(List<ImageObject> imageList)
+        {
+            return new FakeImageObject()
+                {
+                    Area = (int)imageList.Average(x => x.Area),
+                    Density = imageList.Average(x => x.Density),
+                    Elongation = imageList.Average(x => x.Elongation),
+                    Perimeter = (int)imageList.Average(x => x.Perimeter),
+                    MassCenter = new Point((int)imageList.Average(x => x.MassCenter.X), (int)imageList.Average(x => x.MassCenter.Y))
+                };
+        }
+        private int GetClassIndex(FakeImageObject[] classes, ImageObject imageObject)
+        {
+            double[] distances = new double[classes.Count()];
+
+            for (int i = 0; i < classes.Count(); i++)
+            {
+                distances[i] =
+                        Math.Abs(areaCoefficient * (classes[i].Area - imageObject.Area)) +
+                        Math.Abs(densityCoefficient * (classes[i].Density - imageObject.Density)) +
+                        Math.Abs(elongationCoefficient * (classes[i].Elongation - imageObject.Elongation)) +
+                        Math.Abs(perimeterCoefficient * (classes[i].Perimeter - imageObject.Perimeter)) +
+                        Math.Abs(massCenterCoefficient * Math.Sqrt(
+                        (classes[i].MassCenter.X - imageObject.MassCenter.X) * (classes[i].MassCenter.X - imageObject.MassCenter.X) +
+                        (classes[i].MassCenter.Y - imageObject.MassCenter.Y) * (classes[i].MassCenter.Y - imageObject.MassCenter.Y))
+                        );
+            }
+
+            return Array.IndexOf(distances, distances.Min());
+        }
+
+        private FakeImageObject GetRandomFromObjectList()
+        {
+            FakeImageObject result = new FakeImageObject();
+            if (hitImagesList == null)
+            {
+                hitImagesList = new List<ImageObject>();
+            }
+
+            if (hitImagesList.Count == objectList.Count)
+            {
+                result.SetPropertiesFromImageObject(objectList.First());
+                return result;
+            }
+
+            ImageObject randomImage;
+
+            do
+            {
+                randomImage = objectList.ToArray()[random.Next(0, objectList.Count - 1)];
+            } while (hitImagesList.Contains(randomImage));
+
+            hitImagesList.Add(randomImage);
+            result.SetPropertiesFromImageObject(randomImage);
+            return result;
         }
 
         private int GetGroupNumber()
