@@ -50,7 +50,7 @@ namespace DSPbase
         {
             get
             {
-                int m02 = GetMoment(0, 2),
+                double m02 = GetMoment(0, 2),
                     m20 = GetMoment(2, 0),
                     m11 = GetMoment(1, 1);
                 double sqrtRezult = Math.Sqrt((m20 - m02) * (m20 - m02) + 4 * m11 * m11);
@@ -63,9 +63,11 @@ namespace DSPbase
         {
             get
             {
+                int minimalX = (int)pointList.Min(t => t.X);
+                int minimalY = (int)pointList.Min(t => t.Y);
                 return new Point(
-                       (int)pointList.Average(t => t.X),
-                       (int)pointList.Average(t => t.Y));
+                       (int)pointList.Average(t => t.X-minimalX),
+                       (int)pointList.Average(t => t.Y-minimalY));
             }
         }
 

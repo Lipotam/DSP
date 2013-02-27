@@ -26,6 +26,7 @@ namespace DSPbase
             Elongation = imageObject.Elongation;
             MassCenter = imageObject.MassCenter;
             Density = imageObject.Density;
+            Perimeter = imageObject.Perimeter;
         }
     }
 }

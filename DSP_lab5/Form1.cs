@@ -65,7 +65,7 @@ namespace DSP_lab5
             image = new ImageRecognizer((Bitmap)pictureBox1.Image,(byte)separateValue.Value);
             image.TransformToBlackAndWhite();
             pictureBox2.Image = image.OutputImage;
-            image.RecognizeToGroups();
+            image.RecognizePixelsToGroups();
             image.PaintFromGroupMap();
             pictureBox3.Image = image.OutputImage;
             DrawHistogram(zedGraphControl2, pictureBox1);

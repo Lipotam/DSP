@@ -60,10 +60,11 @@ namespace DSP_lab6
 
         private void button2_Click(object sender, EventArgs e)
         {
-            image = new ImageRecognizer((Bitmap)pictureBox1.Image, (byte)separateValue.Value,(int)MinSquare.Value);
+            image = new ImageRecognizer((Bitmap)pictureBox1.Image, (byte)separateValue.Value,(int)MinSquare.Value,(int)KMedianNumber.Value,(double)areaCoefficient.Value,
+                (double)perimeterCoefficient.Value, (double)elongationCoefficient.Value, (double)DensityCoefficient.Value, (double)massCenterCoefficient.Value);
             image.TransformToBlackAndWhite();
             pictureBox2.Image = image.OutputImage;
-            image.RecognizeToGroups();
+            image.RecognizePixelsToGroups();
             image.SetPixelsToObjectGroupsWithFilter();
             image.SetObjectsToGroups();
             image.PaintFromGroupMap();
