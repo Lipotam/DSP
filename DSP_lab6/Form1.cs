@@ -65,6 +65,7 @@ namespace DSP_lab6
             pictureBox2.Image = image.OutputImage;
             image.RecognizeToGroups();
             image.SetPixelsToObjectGroupsWithFilter();
+            image.SetObjectsToGroups();
             image.PaintFromGroupMap();
             pictureBox3.Image = image.OutputImage;
             DrawHistogram(zedGraphControl2, pictureBox1);

@@ -17,7 +17,7 @@ namespace DSPbase
         private List<ImageObject> objectList;
         private int kMedians;
         private List<ImageObject> hitImagesList;
-        private double areaCoefficient, perimeterCoefficient, elongationCoefficient, densityCoefficient, massCenterCoefficient;
+        private readonly double areaCoefficient, perimeterCoefficient, elongationCoefficient, densityCoefficient, massCenterCoefficient;
 
         private readonly int lowestRedValue;
         private readonly int highestRedValue;
@@ -292,11 +292,99 @@ namespace DSPbase
                 imageClasses[GetClassIndex(mediansArray, imageObject)].Add(imageObject);
             }
 
+            bool flag = true;
+            while (flag)
+            {
+                flag = false;
+                mediansArray = new FakeImageObject[kMedians];
 
+                for (int i = 0; i < kMedians; i++)
+                {
+                    mediansArray[i] = GetAverageFromImageList(imageClasses[i]);
+                }
 
+                List<ImageObject>[] tempImageClasses = new List<ImageObject>[kMedians];
+                for (int i = 0; i < kMedians; i++)
+                {
+                    tempImageClasses[i] = new List<ImageObject>();
+                }
+                foreach (List<ImageObject> objectList1 in imageClasses)
+                {
+                    foreach (ImageObject imageObject in objectList1)
+                    {
+                        tempImageClasses[GetClassIndex(mediansArray, imageObject)].Add(imageObject);
+                    }
+                }
 
+                for (int i = 0; i < kMedians; i++)
+                {
+                    if (tempImageClasses[i].Count != imageClasses[i].Count)
+                    {
+                        flag = true;
+                    }
+                }
 
+                imageClasses = tempImageClasses;
+            }
 
+            foreach (List<ImageObject> imageObjectList in imageClasses)
+            {
+                foreach (ImageObject imageObject in imageObjectList)
+                {
+                    foreach (Point point in imageObject.Points)
+                    {
+                        groupMap[point.X, point.Y] = Array.IndexOf(imageClasses, imageObjectList) + 2;
+                    }
+                }
+            }
+        }
+
+        public void SetPixelsToObjectGroupsWithFilter()
+        {
+            ImageObject[] objectArray = new ImageObject[GetGroupNumber() + 1];
+            objectArray[0] = new ImageObject();
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (objectArray[groupMap[x, y]] == null)
+                    {
+                        objectArray[groupMap[x, y]] = new ImageObject();
+                        objectArray[groupMap[x, y]].GroupId = groupMap[x, y];
+                    }
+
+                    objectArray[groupMap[x, y]].AddPoint(new Point(x, y));
+
+                    if (!(
+                        IsGroupEqualToGroupnumber(x - 1, y, groupMap[x, y]) &&
+                        IsGroupEqualToGroupnumber(x + 1, y, groupMap[x, y]) &&
+                        IsGroupEqualToGroupnumber(x, y - 1, groupMap[x, y]) &&
+                        IsGroupEqualToGroupnumber(x, y + 1, groupMap[x, y])))
+                    {
+                        objectArray[groupMap[x, y]].IncrementPerimeter();
+                    }
+                }
+            }
+            objectList = new List<ImageObject>();
+            foreach (ImageObject imageObject in objectArray)
+            {
+                if (imageObject.Area == 0 || imageObject.GroupId == 1)
+                {
+                    continue;
+                }
+                if (imageObject.Area > minimalSquare)
+                {
+                    objectList.Add(imageObject);
+                }
+                else
+                {
+                    foreach (Point point in imageObject.Points)
+                    {
+                        groupMap[point.X, point.Y] = 1;
+                    }
+                }
+            }
         }
 
         private FakeImageObject GetAverageFromImageList(List<ImageObject> imageList)
@@ -310,6 +398,7 @@ namespace DSPbase
                     MassCenter = new Point((int)imageList.Average(x => x.MassCenter.X), (int)imageList.Average(x => x.MassCenter.Y))
                 };
         }
+
         private int GetClassIndex(FakeImageObject[] classes, ImageObject imageObject)
         {
             double[] distances = new double[classes.Count()];
@@ -373,50 +462,7 @@ namespace DSPbase
             return maxGroupNumer;
         }
 
-        public void SetPixelsToObjectGroupsWithFilter()
-        {
-            ImageObject[] objectArray = new ImageObject[GetGroupNumber() + 1];
-            objectArray[0] = new ImageObject();
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    if (objectArray[groupMap[x, y]] == null)
-                    {
-                        objectArray[groupMap[x, y]] = new ImageObject();
-                        objectArray[groupMap[x, y]].GroupId = groupMap[x, y];
-                    }
-
-                    objectArray[groupMap[x, y]].AddPoint(new Point(x, y));
-
-                    if (!(
-                        IsGroupEqualToGroupnumber(x - 1, y, groupMap[x, y]) &&
-                        IsGroupEqualToGroupnumber(x + 1, y, groupMap[x, y]) &&
-                        IsGroupEqualToGroupnumber(x, y - 1, groupMap[x, y]) &&
-                        IsGroupEqualToGroupnumber(x, y + 1, groupMap[x, y])))
-                    {
-                        objectArray[groupMap[x, y]].IncrementPerimeter();
-                    }
-                }
-            }
-            List<ImageObject> objectList = new List<ImageObject>();
-            foreach (ImageObject imageObject in objectArray)
-            {
-                if (imageObject.Area > minimalSquare)
-                {
-                    objectList.Add(imageObject);
-                }
-                else
-                {
-                    foreach (Point point in imageObject.Points)
-                    {
-                        groupMap[point.X, point.Y] = 1;
-                    }
-                }
-            }
-        }
-
+        
         private Color GetRandomColor()
         {
             return Color.FromArgb(
