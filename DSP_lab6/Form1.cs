@@ -103,5 +103,6 @@ namespace DSP_lab6
             control.AxisChange();
             control.Invalidate();
         }
+
     }
 }

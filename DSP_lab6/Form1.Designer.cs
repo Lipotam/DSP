@@ -43,11 +43,29 @@
             this.separateValue = new System.Windows.Forms.NumericUpDown();
             this.MinSquare = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
+            this.KMedianNumber = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
+            this.areaCoefficient = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.perimeterCoefficient = new System.Windows.Forms.NumericUpDown();
+            this.elongationCoefficient = new System.Windows.Forms.NumericUpDown();
+            this.massCenterCoefficient = new System.Windows.Forms.NumericUpDown();
+            this.DensityCoefficient = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.separateValue)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinSquare)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.KMedianNumber)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.areaCoefficient)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.perimeterCoefficient)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.elongationCoefficient)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.massCenterCoefficient)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DensityCoefficient)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -194,11 +212,214 @@
             this.label5.TabIndex = 15;
             this.label5.Text = "Minimal Square";
             // 
+            // KMedianNumber
+            // 
+            this.KMedianNumber.Location = new System.Drawing.Point(12, 174);
+            this.KMedianNumber.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.KMedianNumber.Name = "KMedianNumber";
+            this.KMedianNumber.Size = new System.Drawing.Size(75, 20);
+            this.KMedianNumber.TabIndex = 16;
+            this.KMedianNumber.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(9, 158);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(80, 13);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "Median number";
+            // 
+            // areaCoefficient
+            // 
+            this.areaCoefficient.DecimalPlaces = 2;
+            this.areaCoefficient.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.areaCoefficient.Location = new System.Drawing.Point(12, 286);
+            this.areaCoefficient.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.areaCoefficient.Name = "areaCoefficient";
+            this.areaCoefficient.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.areaCoefficient.Size = new System.Drawing.Size(75, 20);
+            this.areaCoefficient.TabIndex = 18;
+            this.areaCoefficient.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(9, 270);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(29, 13);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "Area";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(7, 309);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(51, 13);
+            this.label8.TabIndex = 24;
+            this.label8.Text = "Perimeter";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(9, 350);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(57, 13);
+            this.label9.TabIndex = 25;
+            this.label9.Text = "Elongation";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(9, 389);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(65, 13);
+            this.label10.TabIndex = 26;
+            this.label10.Text = "Mass center";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(9, 428);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(42, 13);
+            this.label11.TabIndex = 27;
+            this.label11.Text = "Density";
+            // 
+            // perimeterCoefficient
+            // 
+            this.perimeterCoefficient.DecimalPlaces = 2;
+            this.perimeterCoefficient.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.perimeterCoefficient.Location = new System.Drawing.Point(12, 327);
+            this.perimeterCoefficient.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.perimeterCoefficient.Name = "perimeterCoefficient";
+            this.perimeterCoefficient.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.perimeterCoefficient.Size = new System.Drawing.Size(75, 20);
+            this.perimeterCoefficient.TabIndex = 28;
+            this.perimeterCoefficient.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // elongationCoefficient
+            // 
+            this.elongationCoefficient.DecimalPlaces = 2;
+            this.elongationCoefficient.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.elongationCoefficient.Location = new System.Drawing.Point(10, 366);
+            this.elongationCoefficient.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.elongationCoefficient.Name = "elongationCoefficient";
+            this.elongationCoefficient.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.elongationCoefficient.Size = new System.Drawing.Size(75, 20);
+            this.elongationCoefficient.TabIndex = 29;
+            this.elongationCoefficient.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // massCenterCoefficient
+            // 
+            this.massCenterCoefficient.DecimalPlaces = 2;
+            this.massCenterCoefficient.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.massCenterCoefficient.Location = new System.Drawing.Point(10, 405);
+            this.massCenterCoefficient.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.massCenterCoefficient.Name = "massCenterCoefficient";
+            this.massCenterCoefficient.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.massCenterCoefficient.Size = new System.Drawing.Size(75, 20);
+            this.massCenterCoefficient.TabIndex = 30;
+            this.massCenterCoefficient.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // DensityCoefficient
+            // 
+            this.DensityCoefficient.DecimalPlaces = 2;
+            this.DensityCoefficient.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.DensityCoefficient.Location = new System.Drawing.Point(10, 444);
+            this.DensityCoefficient.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.DensityCoefficient.Name = "DensityCoefficient";
+            this.DensityCoefficient.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.DensityCoefficient.Size = new System.Drawing.Size(75, 20);
+            this.DensityCoefficient.TabIndex = 31;
+            this.DensityCoefficient.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(920, 595);
+            this.Controls.Add(this.DensityCoefficient);
+            this.Controls.Add(this.massCenterCoefficient);
+            this.Controls.Add(this.elongationCoefficient);
+            this.Controls.Add(this.perimeterCoefficient);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.areaCoefficient);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.KMedianNumber);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.MinSquare);
             this.Controls.Add(this.separateValue);
@@ -219,6 +440,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.separateValue)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.MinSquare)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.KMedianNumber)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.areaCoefficient)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.perimeterCoefficient)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.elongationCoefficient)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.massCenterCoefficient)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DensityCoefficient)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -240,6 +467,18 @@
         private System.Windows.Forms.NumericUpDown separateValue;
         private System.Windows.Forms.NumericUpDown MinSquare;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown KMedianNumber;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.NumericUpDown areaCoefficient;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.NumericUpDown perimeterCoefficient;
+        private System.Windows.Forms.NumericUpDown elongationCoefficient;
+        private System.Windows.Forms.NumericUpDown massCenterCoefficient;
+        private System.Windows.Forms.NumericUpDown DensityCoefficient;
     }
 }
 
