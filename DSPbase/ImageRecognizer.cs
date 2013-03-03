@@ -15,16 +15,11 @@ namespace DSPbase
         private Bitmap outputImage;
         private byte[] outputBytes;
         private List<ImageObject> objectList;
-        private int kMedians;
+        private readonly int kMedians;
         private List<ImageObject> hitImagesList;
+        private int[] hitClosesImagesList;
         private readonly double areaCoefficient, perimeterCoefficient, elongationCoefficient, densityCoefficient, massCenterCoefficient;
-
-        private readonly int lowestRedValue;
-        private readonly int highestRedValue;
-        private readonly int lowestGreenValue;
-        private readonly int higestGreenValue;
-        private readonly int lowestBlueValue;
-        private readonly int highestBlueValue;
+        private readonly int lowestRedValue, highestRedValue, lowestGreenValue, higestGreenValue, lowestBlueValue, highestBlueValue;
         private readonly int minimalSquare;
         private readonly byte separateValue;
 
@@ -144,7 +139,7 @@ namespace DSPbase
 
         public void PaintFromGroupMap()
         {
-            int maxGroupNumer = this.GetGroupNumber();
+            int maxGroupNumer = this.GetGroupsNumber();
 
             List<Color> colorList = new List<Color>();
             for (int i = 0; i < maxGroupNumer; i++)
@@ -171,10 +166,12 @@ namespace DSPbase
         public void SetObjectsToGroups()
         {
             FakeImageObject[] mediansArray = new FakeImageObject[kMedians];
+            hitClosesImagesList = null;
             for (int i = 0; i < kMedians; i++)
             {
                 mediansArray[i] = GetRandomFromObjectList();
             }
+            hitClosesImagesList = null;
 
             List<ImageObject>[] imageClasses = new List<ImageObject>[kMedians];
             for (int i = 0; i < kMedians; i++)
@@ -193,10 +190,13 @@ namespace DSPbase
                 flag = false;
                 mediansArray = new FakeImageObject[kMedians];
 
+                hitClosesImagesList = null;
                 for (int i = 0; i < kMedians; i++)
                 {
-                    mediansArray[i] = GetAverageFromImageList(imageClasses[i]);
+                    mediansArray[i] = GetClosestObjectFromObjectList(GetAverageFromImageList(imageClasses[i]));
                 }
+
+                hitClosesImagesList = null;
 
                 List<ImageObject>[] tempImageClasses = new List<ImageObject>[kMedians];
                 for (int i = 0; i < kMedians; i++)
@@ -236,7 +236,7 @@ namespace DSPbase
 
         public void SetPixelsToObjectGroupsWithFilter()
         {
-            ImageObject[] objectArray = new ImageObject[GetGroupNumber() + 1];
+            ImageObject[] objectArray = new ImageObject[this.GetGroupsNumber() + 1];
             objectArray[0] = new ImageObject();
 
             for (int x = 0; x < width; x++)
@@ -245,8 +245,10 @@ namespace DSPbase
                 {
                     if (objectArray[groupMap[x, y]] == null)
                     {
-                        objectArray[groupMap[x, y]] = new ImageObject();
-                        objectArray[groupMap[x, y]].GroupId = groupMap[x, y];
+                        objectArray[groupMap[x, y]] = new ImageObject
+                            {
+                                GroupId = this.groupMap[x, y]
+                            };
                     }
 
                     objectArray[groupMap[x, y]].AddPoint(new Point(x, y));
@@ -288,15 +290,17 @@ namespace DSPbase
             {
                 return new FakeImageObject();
             }
-            return new FakeImageObject()
-                {
-                    Area = (int)imageList.Average(x => x.Area),
-                    Density = imageList.Average(x => x.Density),
-                    Elongation = imageList.Average(x => x.Elongation),
-                    Perimeter = (int)imageList.Average(x => x.Perimeter),
-                    MassCenter = new Point((int)imageList.Average(x => x.MassCenter.X), (int)imageList.Average(x => x.MassCenter.Y))
-                };
+            return new FakeImageObject
+            {
+                Area = (int)imageList.Average(x => x.Area),
+                Density = imageList.Average(x => x.Density),
+                Elongation = imageList.Average(x => x.Elongation),
+                Perimeter = (int)imageList.Average(x => x.Perimeter),
+                MassCenter = new Point((int)imageList.Average(x => x.MassCenter.X), (int)imageList.Average(x => x.MassCenter.Y))
+            };
         }
+
+
 
         private int GetClassIndex(FakeImageObject[] classes, ImageObject imageObject)
         {
@@ -321,30 +325,71 @@ namespace DSPbase
         private FakeImageObject GetRandomFromObjectList()
         {
             FakeImageObject result = new FakeImageObject();
-            if (hitImagesList == null)
+
+            if (hitClosesImagesList == null)
             {
-                hitImagesList = new List<ImageObject>();
+                hitClosesImagesList = new int[objectList.Count];
             }
 
-            if (hitImagesList.Count == objectList.Count)
+            if (hitClosesImagesList.Where(x => x == 1).Count() == objectList.Count)
             {
                 result.SetPropertiesFromImageObject(objectList.First());
                 return result;
             }
 
-            ImageObject randomImage;
-
+            int imageIndex;
             do
             {
-                randomImage = objectList.ToArray()[random.Next(0, objectList.Count - 1)];
-            } while (hitImagesList.Contains(randomImage));
+                imageIndex = random.Next(0, objectList.Count - 1);
+            } while (hitClosesImagesList[imageIndex] != 0);
 
-            hitImagesList.Add(randomImage);
-            result.SetPropertiesFromImageObject(randomImage);
+            hitClosesImagesList[imageIndex] = 1;
+            result.SetPropertiesFromImageObject(objectList.ToArray()[imageIndex]);
             return result;
         }
 
-        private int GetGroupNumber()
+
+        private FakeImageObject GetClosestObjectFromObjectList(FakeImageObject fakeImage)
+        {
+            FakeImageObject result = new FakeImageObject();
+            if (hitClosesImagesList == null)
+            {
+                hitClosesImagesList = new int[objectList.Count];
+            }
+
+            ImageObject[] classes = objectList.ToArray();
+            double[] distances = new double[objectList.Count];
+            for (int i = 0; i < objectList.Count; i++)
+            {
+                distances[i] =
+                        Math.Abs(areaCoefficient * (classes[i].Area - fakeImage.Area)) +
+                        Math.Abs(densityCoefficient * (classes[i].Density - fakeImage.Density)) +
+                        Math.Abs(elongationCoefficient * (classes[i].Elongation - fakeImage.Elongation)) +
+                        Math.Abs(perimeterCoefficient * (classes[i].Perimeter - fakeImage.Perimeter)) +
+                        Math.Abs(massCenterCoefficient * Math.Sqrt(
+                        (classes[i].MassCenter.X - fakeImage.MassCenter.X) * (classes[i].MassCenter.X - fakeImage.MassCenter.X) +
+                        (classes[i].MassCenter.Y - fakeImage.MassCenter.Y) * (classes[i].MassCenter.Y - fakeImage.MassCenter.Y))
+                        );
+            }
+
+            int index = 0;
+            double minRange = distances[0];
+            for (int i = 0; i < objectList.Count; i++)
+            {
+                if (hitClosesImagesList[i] == 0 && distances[i] <= minRange)
+                {
+                    minRange = distances[i];
+                    index = i;
+                }
+            }
+
+            result.SetPropertiesFromImageObject(classes[index]);
+            hitClosesImagesList[index] = 1;
+
+            return result;
+        }
+
+        private int GetGroupsNumber()
         {
             int maxGroupNumer = groupMap[0, 0];
             for (int x = 0; x < width; x++)
@@ -434,7 +479,7 @@ namespace DSPbase
                 return 0;
             }
 
-            if (recursiveNesting >= 10)
+            if (recursiveNesting >= 100)
             {
                 listX.Add(coordinateX);
                 listY.Add(coordinateY);
@@ -451,22 +496,22 @@ namespace DSPbase
                 return 0;
             }
 
-            if (!(coordinateX - 1 < 0 || coordinateY < 0 || coordinateX - 1 > width - 1 || coordinateY > height - 1) && groupMap[coordinateX - 1, coordinateY] == 0)
+            if (IsGroupEqualToGroupnumber(coordinateX - 1, coordinateY, 0))
             {
                 SetGroupToPixel(coordinateX - 1, coordinateY, groupId, (byte)(recursiveNesting + 1));
             }
 
-            if (!(coordinateX + 1 < 0 || coordinateY < 0 || coordinateX + 1 > width - 1 || coordinateY > height - 1) && groupMap[coordinateX + 1, coordinateY] == 0)
+            if (IsGroupEqualToGroupnumber(coordinateX + 1, coordinateY, 0))
             {
                 SetGroupToPixel(coordinateX + 1, coordinateY, groupId, (byte)(recursiveNesting + 1));
             }
 
-            if (!(coordinateX < 0 || coordinateY - 1 < 0 || coordinateX > width - 1 || coordinateY - 1 > height - 1) && groupMap[coordinateX, coordinateY - 1] == 0)
+            if (IsGroupEqualToGroupnumber(coordinateX, coordinateY - 1, 0))
             {
                 SetGroupToPixel(coordinateX, coordinateY - 1, groupId, (byte)(recursiveNesting + 1));
             }
 
-            if (!(coordinateX < 0 || coordinateY + 1 < 0 || coordinateX > width - 1 || coordinateY + 1 > height - 1) && groupMap[coordinateX, coordinateY + 1] == 0)
+            if (IsGroupEqualToGroupnumber(coordinateX, coordinateY + 1, 0))
             {
                 SetGroupToPixel(coordinateX, coordinateY + 1, groupId, (byte)(recursiveNesting + 1));
             }
