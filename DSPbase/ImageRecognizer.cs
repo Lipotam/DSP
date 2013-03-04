@@ -213,7 +213,7 @@ namespace DSPbase
 
                 for (int i = 0; i < kMedians; i++)
                 {
-                    if (tempImageClasses[i].Count != imageClasses[i].Count)
+                    if (tempImageClasses[i].Equals(imageClasses[i]))
                     {
                         flag = true;
                     }
