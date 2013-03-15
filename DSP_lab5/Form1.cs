@@ -62,7 +62,7 @@ namespace DSP_lab5
 
         private void button2_Click(object sender, EventArgs e)
         {
-            image = new ImageRecognizer((Bitmap)pictureBox1.Image,(byte)separateValue.Value);
+            image = new ImageRecognizer((Bitmap)pictureBox1.Image,(byte)separateValue.Value,0);
             image.TransformToBlackAndWhite();
             pictureBox2.Image = image.OutputImage;
             image.RecognizePixelsToGroups();

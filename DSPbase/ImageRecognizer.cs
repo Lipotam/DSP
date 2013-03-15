@@ -16,7 +16,6 @@ namespace DSPbase
         private byte[] outputBytes;
         private List<ImageObject> objectList;
         private readonly int kMedians;
-        private List<ImageObject> hitImagesList;
         private int[] hitClosesImagesList;
         private readonly double areaCoefficient, perimeterCoefficient, elongationCoefficient, densityCoefficient, massCenterCoefficient;
         private readonly int lowestRedValue, highestRedValue, lowestGreenValue, higestGreenValue, lowestBlueValue, highestBlueValue;
@@ -120,9 +119,9 @@ namespace DSPbase
                 height = inputImage.Height;
             }
             outputBytes = new byte[inputBytes.Length];
-            for (int x = 0; x < width - 1; x++)
+            for (int x = 0; x < width ; x++)
             {
-                for (int y = 0; y < height - 1; y++)
+                for (int y = 0; y < height ; y++)
                 {
                     outputBytes[4 * (width * y + x) + 0] =
                         outputBytes[4 * (width * y + x) + 1] =
