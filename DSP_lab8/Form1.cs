@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 using DSPbase;
 
-namespace DSP_lab7
+namespace DSP_lab8
 {
     public partial class Form1 : Form
     {
