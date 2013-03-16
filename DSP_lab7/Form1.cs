@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DSPbase;
@@ -15,7 +10,7 @@ namespace DSP_lab7
 {
     public partial class Form1 : Form
     {
-        private int size = 0;
+        private int size;
         private int height;
         private int width;
 
@@ -30,7 +25,6 @@ namespace DSP_lab7
         {
             InitializeComponent();
         }
-
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -84,8 +78,10 @@ namespace DSP_lab7
 
         private void button1_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp,*.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+                {
+                        Filter ="Image Files(*.jpg; *.jpeg; *.gif; *.bmp,*.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png"
+                };
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -141,14 +137,9 @@ namespace DSP_lab7
                 return;
             }
 
-            if (recognizer.TeachWithTheImage(draws))
-            {
-                MessageBox.Show("Teaching error");
-            }
-            else
-            {
-                MessageBox.Show("Success");
-            }
+            MessageBox.Show(this.recognizer.TeachWithTheImage(this.draws)
+                                    ? "Teaching error"
+                                    : "Success");
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -176,7 +167,7 @@ namespace DSP_lab7
         {
             for (int i = 0; i < size; i++)
             {
-                draws[i] = -1*draws[i];
+                draws[i] = -1 * draws[i];
             }
             panel1.Refresh();
         }
