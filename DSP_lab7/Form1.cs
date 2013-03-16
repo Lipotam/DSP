@@ -21,6 +21,8 @@ namespace DSP_lab7
 
         private int elementWidth, elementHeight;
 
+        private HopfieldRecognizer recognizer;
+
         private int[] draws;
         private Bitmap image;
 
@@ -51,7 +53,7 @@ namespace DSP_lab7
                 if (draws[i] == 1)
                 {
                     int coordinateX = (i % width) * elementWidth;
-                    int coordinateY =(i / width) * elementHeight;
+                    int coordinateY = (i / width) * elementHeight;
                     g.FillRectangle(Brushes.Black, coordinateX, coordinateY, elementWidth, elementHeight);
                 }
             }
@@ -125,6 +127,58 @@ namespace DSP_lab7
                     MessageBox.Show("Error: " + ex.Message);
                 }
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (recognizer == null)
+            {
+                recognizer = new HopfieldRecognizer(height, width);
+            }
+            if (size == 0)
+            {
+                MessageBox.Show("No image to teach ");
+                return;
+            }
+
+            if (recognizer.TeachWithTheImage(draws))
+            {
+                MessageBox.Show("Teaching error");
+            }
+            else
+            {
+                MessageBox.Show("Success");
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (this.recognizer == null)
+            {
+                MessageBox.Show("Error: no recognizer implemented");
+                return;
+            }
+            draws = recognizer.Recognize(draws);
+            MessageBox.Show("Success");
+            panel1.Refresh();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                draws[i] = -1;
+            }
+            panel1.Refresh();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                draws[i] = -1*draws[i];
+            }
+            panel1.Refresh();
         }
     }
 }

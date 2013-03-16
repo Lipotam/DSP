@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FakeImageObject.cs" />
+    <Compile Include="HopfieldRecognizer.cs" />
     <Compile Include="ImageObject.cs" />
     <Compile Include="ImageRecognizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
