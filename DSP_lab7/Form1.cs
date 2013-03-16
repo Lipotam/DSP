@@ -34,11 +34,11 @@ namespace DSP_lab7
         {
             if (e.Button == MouseButtons.Left)
             {
-                draws[(e.Y / 2) * height + (e.X / 2)] = 1;
+                draws[(e.Y / elementHeight) * width + (e.X / elementWidth)] = 1;
             }
             else
             {
-                draws[(e.Y / 2) * height + (e.X / 2)] = -1;
+                draws[(e.Y / elementHeight) * width + (e.X / elementWidth)] = -1;
             }
             panel1.Refresh();
         }
@@ -50,9 +50,9 @@ namespace DSP_lab7
             {
                 if (draws[i] == 1)
                 {
-                    int vert = (i  % height) * 2;
-                    int gor = i / width * 2;
-                    g.FillRectangle(Brushes.Black, vert, gor,2, 2);
+                    int coordinateX = (i % width) * elementWidth;
+                    int coordinateY =(i / width) * elementHeight;
+                    g.FillRectangle(Brushes.Black, coordinateX, coordinateY, elementWidth, elementHeight);
                 }
             }
         }
@@ -66,13 +66,13 @@ namespace DSP_lab7
             {
                 for (int j = 0; j < height; j++)
                 {
-                    if (image.GetPixel(i, j).R == 255)
+                    if (image.GetPixel(i, j).R == 0)
                     {
-                        draws[j * height + i] = 1;
+                        draws[j * width + i] = 1;
                     }
                     else
                     {
-                        draws[j * height + i] = -1;
+                        draws[j * width + i] = -1;
                     }
                 }
             }
@@ -94,14 +94,20 @@ namespace DSP_lab7
                         using (myStream)
                         {
                             image = new Bitmap(openFileDialog1.FileName);
+                            if (image.Height > 100 || image.Width > 100)
+                            {
+                                throw new DataException("Image too big");
+                            }
                             if (size == 0)
                             {
                                 size = image.Width * image.Height;
                                 height = image.Height;
                                 width = image.Width;
                                 draws = new int[size];
-                                panel1.Width = width * 2;
-                                panel1.Height = height * 2;
+                                elementHeight = panel1.Height / height;
+                                elementWidth = panel1.Width / width;
+                                panel1.Width = elementWidth * width;
+                                panel1.Height = elementHeight * height;
                             }
                             else
                             {
