@@ -16,7 +16,7 @@ namespace DSP_lab8
 
         private int elementWidth, elementHeight;
 
-        private HopfieldRecognizer recognizer;
+        private Perseptron recognizer;
 
         private int[] draws;
         private Bitmap image;
@@ -129,7 +129,7 @@ namespace DSP_lab8
         {
             if (this.recognizer == null)
             {
-                this.recognizer = new HopfieldRecognizer(this.height, this.width);
+                this.recognizer = new Perseptron(height * width, 3);
             }
             if (this.size == 0)
             {
@@ -137,7 +137,17 @@ namespace DSP_lab8
                 return;
             }
 
-            MessageBox.Show(this.recognizer.TeachWithTheImage(this.draws)
+            int group = 1;
+            if (radioButton2.Checked)
+            {
+                group = 2;
+            }
+            if (radioButton3.Checked)
+            {
+                group = 3;
+            }
+
+            MessageBox.Show(this.recognizer.Teach(this.draws, group)
                                     ? "Teaching error"
                                     : "Success");
         }
@@ -149,8 +159,8 @@ namespace DSP_lab8
                 MessageBox.Show("Error: no recognizer implemented");
                 return;
             }
-            this.draws = this.recognizer.Recognize(this.draws);
-            MessageBox.Show("Success");
+
+            MessageBox.Show("Group is" + this.recognizer.Ask(this.draws).ToString());
             this.panel1.Refresh();
         }
 
