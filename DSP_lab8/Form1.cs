@@ -147,7 +147,7 @@ namespace DSP_lab8
                 group = 3;
             }
 
-            MessageBox.Show(this.recognizer.Teach(this.draws, group)
+            MessageBox.Show(this.recognizer.AddForTeaching(this.draws, group)
                                     ? "Teaching error"
                                     : "Success");
         }
@@ -180,6 +180,13 @@ namespace DSP_lab8
                 this.draws[i] = -1 * this.draws[i];
             }
             this.panel1.Refresh();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(this.recognizer.Teach()
+                                   ? "Teaching error"
+                                   : "Success");
         }
     }
 }
