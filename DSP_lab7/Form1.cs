@@ -171,5 +171,26 @@ namespace DSP_lab7
             }
             this.panel1.Refresh();
         }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            int[] temp = new int[size];
+            Random rand = new Random();
+            int i = 0;
+
+            while (i < (size * numericUpDown1.Value / 100))
+            {
+                int index = rand.Next(size);
+                if (temp[index] == 0)
+                {
+                    draws[index] = draws[index] * (-1);
+                    i++;
+                    temp[index] = 1;
+                }
+
+            }
+
+            panel1.Refresh();
+        }
     }
 }
