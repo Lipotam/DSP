@@ -212,10 +212,10 @@
             this.numericUpDownD.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownD.TabIndex = 12;
             this.numericUpDownD.Value = new decimal(new int[] {
-            1,
+            9,
             0,
             0,
-            0});
+            65536});
             // 
             // Form1
             // 

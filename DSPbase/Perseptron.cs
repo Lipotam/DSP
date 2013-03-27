@@ -88,9 +88,11 @@ namespace DSPbase
 
                 for (int i = 0; i < outputNeuroneCount; i++)
                 {
-                    while (HasMistake(i, image.GroupNumber))
+                    int iterationCount = 0;
+                    while (HasMistake(i, image.GroupNumber) && iterationCount < 10)
                     {
                         Correct(i, image);
+                        iterationCount++;
                     }
                 }
             }
@@ -129,10 +131,10 @@ namespace DSPbase
 
         private double GetDistance(int j, double rightAnswer)
         {
-            if(j == rightAnswer)
-                {
-                    return Math.Abs(perseptronOutput[j] -1);
-                }
+            if (j == rightAnswer)
+            {
+                return Math.Abs(perseptronOutput[j] - 1);
+            }
             return Math.Abs(perseptronOutput[j] - 0);
         }
 
