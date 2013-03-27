@@ -129,7 +129,7 @@ namespace DSP_lab8
         {
             if (this.recognizer == null)
             {
-                this.recognizer = new Perseptron(height * width, 3);
+                this.recognizer = new Perseptron(height * width, 3, (double)numericUpDownALFA.Value, (double)numericUpDownBeta.Value, (double)numericUpDownD.Value);
             }
             if (this.size == 0)
             {
@@ -137,14 +137,14 @@ namespace DSP_lab8
                 return;
             }
 
-            int group = 1;
+            int group = 0;
             if (radioButton2.Checked)
             {
-                group = 2;
+                group = 1;
             }
             if (radioButton3.Checked)
             {
-                group = 3;
+                group = 2;
             }
 
             MessageBox.Show(this.recognizer.AddForTeaching(this.draws, group)
@@ -160,7 +160,7 @@ namespace DSP_lab8
                 return;
             }
 
-            MessageBox.Show("Group is" + this.recognizer.Ask(this.draws).ToString());
+            MessageBox.Show("Group is" + (this.recognizer.Ask(this.draws)+1).ToString());
             this.panel1.Refresh();
         }
 

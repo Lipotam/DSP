@@ -11,19 +11,23 @@ namespace DSPbase
         private readonly Random rand = new Random();
         private int[] inputVector;
         private List<TeachingObject> teachingObjects;
+        private readonly double alpha, beta, mistakeDistance;
 
         private double[,] weightsToHidden, weightsFromHidden;
         private double[] hiddenBoundary, outputBoundary;
 
-
         private double[] hiddenOutput;
         private double[] perseptronOutput;
 
-        public Perseptron(int inputNeuronCount, int outputNeuroneCount)
+        public Perseptron(int inputNeuronCount, int outputNeuroneCount, double alpha, double beta, double mistakeDistance)
         {
             this.inputNeuronCount = inputNeuronCount;
             this.neuronesOnHiddenLayer = inputNeuronCount / 2;
             this.outputNeuroneCount = outputNeuroneCount;
+
+            this.alpha = alpha;
+            this.beta = beta;
+            this.mistakeDistance = mistakeDistance;
 
             this.weightsToHidden = new double[inputNeuronCount, neuronesOnHiddenLayer];
             this.weightsFromHidden = new double[neuronesOnHiddenLayer, outputNeuroneCount];
@@ -57,41 +61,116 @@ namespace DSPbase
 
         public int Ask(int[] input)
         {
-            throw new NotImplementedException();
+            inputVector = input;
+            CountHiddenOutput();
+            CountOutput();
+            double resultValue = perseptronOutput[0];
+            int result = 0;
+            for (int i = 1; i < outputNeuroneCount; i++)
+            {
+                if (perseptronOutput[i] > resultValue)
+                {
+                    resultValue = perseptronOutput[i];
+                    result = i;
+                }
+            }
+            return result;
         }
 
 
         public bool Teach()
         {
-
-            throw new NotImplementedException();
-            
-
-            for (int i = 0; i < neuronesOnHiddenLayer; i++)
+            foreach (TeachingObject image in teachingObjects)
             {
-                hiddenOutput[i] = HiddenInput(i);
+                inputVector = image.InputVector;
+                CountHiddenOutput();
+                CountOutput();
+
+                for (int i = 0; i < outputNeuroneCount; i++)
+                {
+                    while (HasMistake(i, image.GroupNumber))
+                    {
+                        Correct(i, image);
+                    }
+                }
             }
-            for (int i = 0; i < outputNeuroneCount; i++)
-            {
-                perseptronOutput[i] = PerseptronOutput(i);
-            }
-
-
-
-
-           
-        }
-
-        public bool AddForTeaching(int[] inputs, int answer)
-        {
-            teachingObjects.Add(new TeachingObject {
-                        GroupNumber = answer,
-                        InputVector = inputs
-                });
 
             return false;
         }
 
+        private void Correct(int k, TeachingObject image)
+        {
+            for (int i = 0; i < neuronesOnHiddenLayer; i++)
+            {
+                weightsFromHidden[i, k] += GetHiddenOutputCorrection(k, image.GroupNumber) * hiddenOutput[i];
+            }
+
+            outputBoundary[k] += GetHiddenOutputCorrection(k, image.GroupNumber);
+
+            for (int j = 0; j < neuronesOnHiddenLayer; j++)
+            {
+                for (int i = 0; i < inputNeuronCount; i++)
+                {
+                    weightsToHidden[i, j] += GetHiddenInputCorrection(j, image.GroupNumber) * inputVector[i];
+                }
+                hiddenBoundary[j] += GetHiddenInputCorrection(j, image.GroupNumber);
+            }
+        }
+
+        private double GetHiddenOutputCorrection(int k, double groupID)
+        {
+            return alpha * perseptronOutput[k] * (1 - perseptronOutput[k]) * GetDistance(k, groupID);
+        }
+
+        private double GetHiddenInputCorrection(int j, double groupID)
+        {
+            return beta * hiddenOutput[j] * (1 - hiddenOutput[j]) * GetHiddenDistance(j, groupID);
+        }
+
+        private double GetDistance(int j, double rightAnswer)
+        {
+            if(j == rightAnswer)
+                {
+                    return Math.Abs(perseptronOutput[j] -1);
+                }
+            return Math.Abs(perseptronOutput[j] - 0);
+        }
+
+
+        private double GetHiddenDistance(int j, double rightAnswer)
+        {
+            double result = 0;
+
+            for (int i = 0; i < outputNeuroneCount; i++)
+            {
+                result += GetDistance(i, rightAnswer) * perseptronOutput[i] * (1 - perseptronOutput[i]) * weightsToHidden[j, i];
+            }
+
+            return result;
+        }
+        private bool HasMistake(int j, double rightAnswer)
+        {
+            if (GetDistance(j, rightAnswer) > mistakeDistance)
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool AddForTeaching(int[] inputs, int answer)
+        {
+
+            for (int i = 0; i < inputNeuronCount; i++)
+            {
+                inputs[i] = inputs[i] == -1 ? 0 : 1;
+            }
+            teachingObjects.Add(new TeachingObject
+            {
+                GroupNumber = answer,
+                InputVector = inputs
+            });
+
+            return false;
+        }
 
         private double HiddenInput(int j)
         {
@@ -103,7 +182,7 @@ namespace DSPbase
             }
             result += hiddenBoundary[j];
 
-            return result > 0 ? 1 : -1;
+            return result > 0 ? 1 : 0;
         }
 
         private double PerseptronOutput(int j)
@@ -116,7 +195,22 @@ namespace DSPbase
             }
             result += outputBoundary[j];
 
-            return result > 0 ? 1 : -1;
+            return result > 0 ? 1 : 0;
+        }
+
+        private void CountHiddenOutput()
+        {
+            for (int i = 0; i < neuronesOnHiddenLayer; i++)
+            {
+                hiddenOutput[i] = HiddenInput(i);
+            }
+        }
+        private void CountOutput()
+        {
+            for (int i = 0; i < outputNeuroneCount; i++)
+            {
+                perseptronOutput[i] = PerseptronOutput(i);
+            }
         }
     }
 }

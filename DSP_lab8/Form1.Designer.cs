@@ -38,6 +38,12 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.button6 = new System.Windows.Forms.Button();
+            this.numericUpDownALFA = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownBeta = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownD = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownALFA)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBeta)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownD)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -134,7 +140,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(12, 192);
+            this.button6.Location = new System.Drawing.Point(13, 259);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 9;
@@ -142,12 +148,84 @@
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // numericUpDownALFA
+            // 
+            this.numericUpDownALFA.DecimalPlaces = 2;
+            this.numericUpDownALFA.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericUpDownALFA.Location = new System.Drawing.Point(13, 165);
+            this.numericUpDownALFA.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUpDownALFA.Name = "numericUpDownALFA";
+            this.numericUpDownALFA.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownALFA.TabIndex = 10;
+            this.numericUpDownALFA.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownBeta
+            // 
+            this.numericUpDownBeta.DecimalPlaces = 2;
+            this.numericUpDownBeta.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericUpDownBeta.Location = new System.Drawing.Point(12, 191);
+            this.numericUpDownBeta.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUpDownBeta.Name = "numericUpDownBeta";
+            this.numericUpDownBeta.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownBeta.TabIndex = 11;
+            this.numericUpDownBeta.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // numericUpDownD
+            // 
+            this.numericUpDownD.DecimalPlaces = 2;
+            this.numericUpDownD.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericUpDownD.Location = new System.Drawing.Point(12, 217);
+            this.numericUpDownD.Maximum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.numericUpDownD.Name = "numericUpDownD";
+            this.numericUpDownD.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownD.TabIndex = 12;
+            this.numericUpDownD.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(1261, 499);
+            this.Controls.Add(this.numericUpDownD);
+            this.Controls.Add(this.numericUpDownBeta);
+            this.Controls.Add(this.numericUpDownALFA);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.radioButton3);
             this.Controls.Add(this.radioButton2);
@@ -160,6 +238,9 @@
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownALFA)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBeta)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownD)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -177,6 +258,9 @@
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.NumericUpDown numericUpDownALFA;
+        private System.Windows.Forms.NumericUpDown numericUpDownBeta;
+        private System.Windows.Forms.NumericUpDown numericUpDownD;
     }
 }
 
