@@ -5,9 +5,9 @@ namespace DSPbase
 {
     public class Perseptron
     {
-        private int inputNeuronCount;
-        private int neuronesOnHiddenLayer;
-        private int outputNeuroneCount;
+        private readonly int inputNeuronCount;
+        private readonly int neuronesOnHiddenLayer;
+        private readonly int outputNeuroneCount;
         private readonly Random rand = new Random();
         private int[] inputVector;
         private List<TeachingObject> teachingObjects;
@@ -89,10 +89,12 @@ namespace DSPbase
                 for (int i = 0; i < outputNeuroneCount; i++)
                 {
                     int iterationCount = 0;
-                    while (HasMistake(i, image.GroupNumber) && iterationCount < 10)
+                    while (HasMistake(i, image.GroupNumber) && iterationCount < 20)
                     {
                         Correct(i, image);
                         iterationCount++;
+                        CountHiddenOutput();
+                        CountOutput();
                     }
                 }
             }
@@ -121,7 +123,7 @@ namespace DSPbase
 
         private double GetHiddenOutputCorrection(int k, double groupID)
         {
-            return alpha * perseptronOutput[k] * (1 - perseptronOutput[k]) * GetDistance(k, groupID);
+            return alpha * perseptronOutput[k] * (1 - perseptronOutput[k]) * this.GetDistance(k, groupID);
         }
 
         private double GetHiddenInputCorrection(int j, double groupID)
@@ -129,7 +131,17 @@ namespace DSPbase
             return beta * hiddenOutput[j] * (1 - hiddenOutput[j]) * GetHiddenDistance(j, groupID);
         }
 
+
         private double GetDistance(int j, double rightAnswer)
+        {
+            if (j == rightAnswer)
+            {
+                return 1- perseptronOutput[j];
+            }
+            return  0 -perseptronOutput[j];
+        }
+
+        private double GetAbsoluteDistance(int j, double rightAnswer)
         {
             if (j == rightAnswer)
             {
@@ -145,14 +157,14 @@ namespace DSPbase
 
             for (int i = 0; i < outputNeuroneCount; i++)
             {
-                result += GetDistance(i, rightAnswer) * perseptronOutput[i] * (1 - perseptronOutput[i]) * weightsToHidden[j, i];
+                result += this.GetDistance(i, rightAnswer) * perseptronOutput[i] * (1 - perseptronOutput[i]) * weightsToHidden[j, i];
             }
 
             return result;
         }
         private bool HasMistake(int j, double rightAnswer)
         {
-            if (GetDistance(j, rightAnswer) > mistakeDistance)
+            if (this.GetAbsoluteDistance(j, rightAnswer) > mistakeDistance)
             {
                 return true;
             }
@@ -184,7 +196,7 @@ namespace DSPbase
             }
             result += hiddenBoundary[j];
 
-            return result > 0 ? 1 : 0;
+            return SigmaFunction(result);
         }
 
         private double PerseptronOutput(int j)
@@ -197,7 +209,7 @@ namespace DSPbase
             }
             result += outputBoundary[j];
 
-            return result > 0 ? 1 : 0;
+            return SigmaFunction(result);
         }
 
         private void CountHiddenOutput()
@@ -207,6 +219,12 @@ namespace DSPbase
                 hiddenOutput[i] = HiddenInput(i);
             }
         }
+
+        private double SigmaFunction(double input)
+        {
+            return 1 / (1 + Math.Exp(-1 * input));
+        }
+
         private void CountOutput()
         {
             for (int i = 0; i < outputNeuroneCount; i++)
