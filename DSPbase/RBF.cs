@@ -41,13 +41,13 @@ namespace DSPbase
             {
                 for (int j = 0; j < inputNeuronCount; j++)
                 {
-                    this.weightsToHidden[j, i] = rand.NextDouble() ;
+                    this.weightsToHidden[j, i] = rand.NextDouble();
                 }
                 for (int j = 0; j < outputNeuroneCount; j++)
                 {
-                    this.weightsFromHidden[i, j] = rand.NextDouble() ;
+                    this.weightsFromHidden[i, j] = rand.NextDouble();
                 }
-                this.hiddenBoundary[i] = rand.NextDouble() ;
+                this.hiddenBoundary[i] = rand.NextDouble();
             }
 
             teachingObjects = new List<TeachingObject>();
@@ -70,7 +70,6 @@ namespace DSPbase
             }
             return result;
         }
-
 
         public bool Teach()
         {
@@ -110,7 +109,7 @@ namespace DSPbase
                 {
                     weightsToHidden[i, j] += GetHiddenInputCorrection(j, image.GroupNumber) * inputVector[i];
                 }
-                hiddenBoundary[j] += GetHiddenInputCorrection(j, image.GroupNumber);
+                hiddenBoundary[j] -= GetHiddenInputCorrection(j, image.GroupNumber);
             }
         }
 
@@ -190,7 +189,7 @@ namespace DSPbase
 
             result = -1 * result;
 
-            return Math.Exp(result / (hiddenBoundary[j]*hiddenBoundary[j]));
+            return Math.Exp(result / (hiddenBoundary[j] * hiddenBoundary[j]));
         }
 
         private double PerseptronOutput(int j)
@@ -213,17 +212,24 @@ namespace DSPbase
             }
         }
 
-      public string GetOutputStringForImage(int[] input)
-          {
-          Ask(input);
-          string result = "";
-          for(int i = 0; i < outputNeuroneCount; i++)
-              {
-              result += perseptronOutput[i].ToString();
-              result += " ";
-              }
-          return result;
-          }
+        public string GetOutputStringForImage(int[] input)
+        {
+            Ask(input);
+            string result = "";
+            for (int i = 0; i < outputNeuroneCount; i++)
+            {
+                result += perseptronOutput[i].ToString();
+                result += " ";
+            }
+            return result;
+        }
+
+        public double[] GetOutputValues(int[] input)
+        {
+            Ask(input);
+          
+            return perseptronOutput;
+        }
 
         private void CountOutput()
         {

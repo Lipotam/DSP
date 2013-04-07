@@ -160,7 +160,14 @@ namespace DSP_lab9
                 return;
             }
 
-            MessageBox.Show("Group is" + (this.recognizer.GetOutputStringForImage(this.draws) ).ToString());
+            MessageBox.Show("Group is" );
+
+            double[] values = this.recognizer.GetOutputValues(this.draws);
+            label2.Text = values[0].ToString();
+            label4.Text = values[1].ToString();
+            label6.Text = values[2].ToString();
+            
+
             this.panel1.Refresh();
         }
 
@@ -187,6 +194,11 @@ namespace DSP_lab9
             MessageBox.Show(this.recognizer.Teach()
                                    ? "Teaching error"
                                    : "Success");
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
