@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
 using DSPbase;
+using GoodRBF;
 
 namespace DSP_lab9
 {
@@ -13,10 +15,10 @@ namespace DSP_lab9
         private int size;
         private int height;
         private int width;
-
+        private RBFGrid recognizer;
         private int elementWidth, elementHeight;
 
-        private RBF recognizer;
+        //private RBF recognizer;
 
         private int[] draws;
         private Bitmap image;
@@ -129,7 +131,9 @@ namespace DSP_lab9
         {
             if (this.recognizer == null)
             {
-                this.recognizer = new RBF(height * width, 3, (double)numericUpDownALFA.Value, (double)numericUpDownBeta.Value, (double)numericUpDownD.Value);
+                this.recognizer = new RBFGrid();
+                this.recognizer.InputCellCount = height * width;
+                this.recognizer.OutputCellCount = 3;
             }
             if (this.size == 0)
             {
@@ -147,11 +151,25 @@ namespace DSP_lab9
                 group = 2;
             }
 
-            MessageBox.Show(this.recognizer.AddForTeaching(this.draws, group)
-                                    ? "Teaching error"
-                                    : "Success");
+            recognizer.Input = BMPTransform.BitmapToDouble(GetBitmap(draws));
+            recognizer.LearnImage(group);
+            MessageBox.Show("Success");
         }
 
+        private Bitmap GetBitmap(int[] input)
+        {
+            if (input.Length % 4 != 0) return null;
+            Bitmap output = new Bitmap(width, height);
+            BitmapData outputData = output.LockBits(
+                new Rectangle(0, 0, width, height),
+                ImageLockMode.ReadWrite,
+                PixelFormat.Format32bppRgb
+                );
+
+            System.Runtime.InteropServices.Marshal.Copy(input, 0, outputData.Scan0, input.Length);
+            output.UnlockBits(outputData);
+            return output;
+        }
         private void button3_Click(object sender, EventArgs e)
         {
             if (this.recognizer == null)
@@ -160,15 +178,13 @@ namespace DSP_lab9
                 return;
             }
 
-            MessageBox.Show("Group is" );
-
-            double[] values = this.recognizer.GetOutputValues(this.draws);
-            label2.Text = values[0].ToString();
-            label4.Text = values[1].ToString();
-            label6.Text = values[2].ToString();
+          
+            recognizer.Input = BMPTransform.BitmapToDouble(GetBitmap(draws));
+            recognizer.DoWork();
             
-
-            this.panel1.Refresh();
+            label2.Text = ((float)(100 * recognizer.Output[0])).ToString();
+            label4.Text = ((float)(100 * recognizer.Output[1])).ToString();
+            label6.Text = ((float)(100 * recognizer.Output[2])).ToString();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -191,9 +207,8 @@ namespace DSP_lab9
 
         private void button6_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(this.recognizer.Teach()
-                                   ? "Teaching error"
-                                   : "Success");
+            recognizer.EndLearn();
+            MessageBox.Show( "Success");
         }
 
         private void Form1_Load(object sender, EventArgs e)

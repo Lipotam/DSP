@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSP_lab8", "DSP_lab8\DSP_la
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSP_lab9", "DSP_lab9\DSP_lab9.csproj", "{6FBBEAE1-7C3D-4B0A-86C8-919D998BF90B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodRBF", "GoodRBF\GoodRBF.csproj", "{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{6FBBEAE1-7C3D-4B0A-86C8-919D998BF90B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6FBBEAE1-7C3D-4B0A-86C8-919D998BF90B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6FBBEAE1-7C3D-4B0A-86C8-919D998BF90B}.Release|x86.ActiveCfg = Release|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D239A7BA-0254-4DF3-959A-AB7A6E5066C1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
