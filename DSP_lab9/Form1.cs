@@ -178,13 +178,27 @@ namespace DSP_lab9
                 return;
             }
 
-          
+
             recognizer.Input = BMPTransform.BitmapToDouble(GetBitmap(draws));
             recognizer.DoWork();
-            
-            label2.Text = ((float)(100 * recognizer.Output[0])).ToString();
-            label4.Text = ((float)(100 * recognizer.Output[1])).ToString();
-            label6.Text = ((float)(100 * recognizer.Output[2])).ToString();
+
+            label2.Text = recognizer.Output[0].ToString();
+            label4.Text = recognizer.Output[1].ToString();
+            label6.Text = recognizer.Output[2].ToString();
+
+            double maxValue = recognizer.Output[0];
+            int index = 0;
+            for (int i = 1; i < 3; i++)
+            {
+
+                if (recognizer.Output[i] > maxValue)
+                {
+                    maxValue = recognizer.Output[i];
+                    index = i;
+                }
+            }
+
+            MessageBox.Show("Group number is " + (index+1).ToString());
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -208,7 +222,7 @@ namespace DSP_lab9
         private void button6_Click(object sender, EventArgs e)
         {
             recognizer.EndLearn();
-            MessageBox.Show( "Success");
+            MessageBox.Show("Success");
         }
 
         private void Form1_Load(object sender, EventArgs e)

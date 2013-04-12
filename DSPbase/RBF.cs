@@ -109,7 +109,7 @@ namespace DSPbase
                 {
                     weightsToHidden[i, j] += GetHiddenInputCorrection(j, image.GroupNumber) * inputVector[i];
                 }
-                hiddenBoundary[j] -= GetHiddenInputCorrection(j, image.GroupNumber);
+                hiddenBoundary[j] += GetHiddenInputCorrection(j, image.GroupNumber);
             }
         }
 
