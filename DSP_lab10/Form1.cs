@@ -16,7 +16,7 @@ namespace DSP_lab10
 
         private int elementWidth, elementHeight;
 
-        private Perseptron recognizer;
+        private CompetitiveNet recognizer;
 
         private int[] draws;
         private Bitmap image;
@@ -129,7 +129,7 @@ namespace DSP_lab10
         {
             if (this.recognizer == null)
             {
-                //this.recognizer = new Perseptron(height * width, 3, (double)numericUpDownALFA.Value, (double)numericUpDownBeta.Value, (double)numericUpDownD.Value);
+                this.recognizer = new CompetitiveNet(height * width,  (int)numericUpDownALFA.Value);
             }
             if (this.size == 0)
             {

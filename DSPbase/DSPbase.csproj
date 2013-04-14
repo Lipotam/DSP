@@ -44,6 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompetitiveNet.cs" />
     <Compile Include="FakeImageObject.cs" />
     <Compile Include="HopfieldRecognizer.cs" />
     <Compile Include="ImageObject.cs" />

@@ -124,7 +124,7 @@
             0,
             0});
             this.numericUpDownALFA.Name = "numericUpDownALFA";
-            this.numericUpDownALFA.Size = new System.Drawing.Size(120, 20);
+            this.numericUpDownALFA.Size = new System.Drawing.Size(56, 20);
             this.numericUpDownALFA.TabIndex = 10;
             this.numericUpDownALFA.Value = new decimal(new int[] {
             3,
