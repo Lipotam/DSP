@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GoodRBF
+namespace DSP_lab10
 {
     static class Program
     {
@@ -16,7 +15,7 @@ namespace GoodRBF
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GoodRBF());
+            Application.Run(new Form1());
         }
     }
 }
