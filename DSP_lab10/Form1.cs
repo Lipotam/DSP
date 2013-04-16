@@ -137,10 +137,9 @@ namespace DSP_lab10
                 return;
             }
 
-            int group = 0;
            
 
-            MessageBox.Show(this.recognizer.AddForTeaching(this.draws, group)
+            MessageBox.Show(this.recognizer.AddForTeaching(this.draws)
                                     ? "Teaching error"
                                     : "Success");
         }

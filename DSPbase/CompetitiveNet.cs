@@ -12,9 +12,10 @@ namespace DSPbase
         private List<TeachingObject> teachingObjects;
         private int[] winsCount;
         private double[,] weights;
-        private double betta = 0.3;
-
+        private double betta = 0.05;
+        private double minimalDistanse = 40;
         private double[] netOutput;
+        private bool flag = true;
 
         public CompetitiveNet(int inputCount, int outputClassCount)
         {
@@ -30,9 +31,9 @@ namespace DSPbase
             {
                 for (int j = 0; j < inputCount; j++)
                 {
-                    this.weights[j, i] = rand.NextDouble()  ;
+                    this.weights[j, i] = rand.NextDouble() * 2 - 1;
                 }
-                winsCount[i] = 0;
+                winsCount[i] = 1;
             }
 
             teachingObjects = new List<TeachingObject>();
@@ -70,13 +71,16 @@ namespace DSPbase
 
         public bool Teach()
         {
-            foreach (TeachingObject image in teachingObjects)
+            while (flag)
             {
-                inputVector = image.InputVector;
-                GetOutput(image.InputVector);
-                int bestIndex = GetBest();
-                ChangeWeights(bestIndex);
-
+                flag = false;
+                foreach (TeachingObject image in teachingObjects)
+                {
+                    inputVector = image.InputVector;
+                    GetOutput(image.InputVector);
+                    int bestIndex = GetBest();
+                    ChangeWeights(bestIndex);
+                }
             }
 
             return false;
@@ -92,6 +96,7 @@ namespace DSPbase
         private int GetBest()
         {
             int result = 0;
+            int flagResult = 0;
             double[] distances = new double[outputClassCount];
 
             for (int j = 0; j < this.outputClassCount; j++)
@@ -101,7 +106,21 @@ namespace DSPbase
                 {
                     distances[j] += (weights[i, j] - inputVector[i]) * (weights[i, j] - inputVector[i]);
                 }
-                distances[j] = Math.Sqrt(distances[j])* winsCount[j];
+
+                distances[j] = Math.Sqrt(distances[j]);
+
+
+                if (distances[j] > minimalDistanse)
+                {
+                    flagResult++;
+                }
+
+                distances[j] = distances[j] * winsCount[j];
+            }
+
+            if (flagResult == 3)
+            {
+                flag = true;
             }
 
             double minValue = distances[0];
@@ -118,12 +137,12 @@ namespace DSPbase
             return result;
         }
 
-        public bool AddForTeaching(int[] inputs, int answer)
+        public bool AddForTeaching(int[] inputs)
         {
             teachingObjects.Add(new TeachingObject
             {
-                GroupNumber = answer,
-                InputVector = inputs
+                GroupNumber = 0,
+                InputVector = (int[])inputs.Clone()
             });
 
             return false;
